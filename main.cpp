@@ -42,6 +42,10 @@ void Set(Image I, int i, int j, double g){
 	I.T[i + I.W*j] = g;
 }
 
+double Get(Image I, int i, int j){
+	return double(I.T[i + I.W*j]);
+}
+
 float cost(float x, float y){
 	return abs(x - y);
 }
@@ -63,9 +67,19 @@ void Draw_X_Y(vector<float> X, vector<float> Y){
 void Draw_D(vector<vector<float> > D, int N, int M){
 	openWindow(2*N, 2*M);
 	Image I = AlloueImage(N, M);
+	float m = D[0][0]; 
+	float P = D[0][0];
+
 	for (int i = 0; i < I.H; i++){
 		for (int j = 0; j < I.W; j++){
-			Set(I, i, j, double(15 * D[i][j]));
+			if (D[i][j] < m){ m = D[i][j]; }
+			if (D[i][j] > P){ P = D[i][j]; }
+		}
+	}
+
+	for (int i = 0; i < I.H; i++){
+		for (int j = 0; j < I.W; j++){
+			Set(I, i, j, double(255*D[i][j]/(P-m) - 255*m/(P-m)));
 		}
 	}
 	AfficheImage(I);
