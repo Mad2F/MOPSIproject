@@ -1,10 +1,11 @@
-#include<vector>
-#include<algorithm>
 #include<cstdlib>
 #include<iostream>
 #include <fstream>
 #include<ctime>
 using namespace std;
+
+#include "Graph.h"
+#include "CostMat.h"
 
 float rand_float(){
 	float number1 = 1; float number2 = 1;
@@ -12,107 +13,9 @@ float rand_float(){
 	float number = min(number1, number2) / max(number1, number2);
 	return number;
 }
-#include<Imagine\Graphics.h>
-using namespace Imagine;
 
 
-struct Image{
-	byte*T;
-	int W;
-	int H;
-};
 
-Image AlloueImage(int W, int H){
-	Image Bis;
-	Bis.W = W;
-	Bis.H = H;
-	Bis.T = new byte[W*H];
-	for (int i = 0; i < W*H; i++){
-		Bis.T[i] = 0;
-	}
-	putGreyImage(0, 0, Bis.T, Bis.W, Bis.H);
-	return Bis;
-}
-
-void AfficheImage(Image I){
-	putGreyImage(0, 0, I.T, I.W, I.H);
-}
-
-void Set(Image I, int i, int j, double g){
-	g = byte(g);
-	I.T[i + I.W*j] = g;
-}
-
-double Get(Image I, int i, int j){
-	return double(I.T[i + I.W*j]);
-}
-
-float cost(float x, float y){
-	return abs(x - y);
-}
-
-
-void Draw_X_Y(vector<float> X, vector<float> Y){
-	openWindow(2*X.size(), 2*Y.size());
-	Image I = AlloueImage(X.size(), Y.size());
-	for (int i = 0; i < I.H; i++){
-		for (int j = 0; j < I.W; j++){
-			Set(I, j, i, double(255 * cost(X[i], Y[j])));
-		}
-	}
-	AfficheImage(I);
-	system("pause");
-	endGraphics;
-}
-
-void Draw_D(vector<vector<float> > D, int N, int M){
-	openWindow(2*N, 2*M);
-	Image I = AlloueImage(N, M);
-	float m = D[0][0]; 
-	float P = D[0][0];
-
-	for (int i = 0; i < I.H; i++){
-		for (int j = 0; j < I.W; j++){
-			if (D[i][j] < m){ m = D[i][j]; }
-			if (D[i][j] > P){ P = D[i][j]; }
-		}
-	}
-
-	for (int i = 0; i < I.H; i++){
-		for (int j = 0; j < I.W; j++){
-			Set(I, i, j, double(255*D[i][j]/(P-m) - 255*m/(P-m)));
-		}
-	}
-	AfficheImage(I);
-	system("pause");
-	endGraphics;
-}
-
-vector<vector<float> > costmatrix(vector<float> X, vector<float> Y){
-	vector<vector<float> > Result;
-	//Init
-	for (int i = 0; i < X.size(); i++){
-		vector<float> I;
-		I.push_back(1);
-		for (int j = 1; j < Y.size(); j++){
-			if (i == 0){ I.push_back(1); }
-			else{ I.push_back(0); }
-		}
-		Result.push_back(I);
-	}
-	//Recurrence
-	for (int i = 0; i < X.size(); i++){
-		for (int j = 0; j < Y.size(); j++){
-			if (i == 0 || j == 0){
-				Result[i][j] = 1;
-			}
-			else{
-				Result[i][j] = min(min(Result[i - 1][j - 1], Result[i - 1][j]), Result[i][j - 1]) + cost(X[i], Y[j]);
-			}
-		}
-	}
-	return Result;
-}
 
 int main(){
 	srand(time(0));

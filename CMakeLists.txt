@@ -8,5 +8,11 @@ FIND_PACKAGE(Imagine)
 
 PROJECT(Projet)
 add_executable(Project
-               main.cpp)
+               main.cpp
+			   Image.h
+			   Image.cpp
+			   Graph.h
+			   Graph.cpp
+			   CostMat.h
+			   CostMat.cpp)
 ImagineUseModules(Project Graphics)
