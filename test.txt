@@ -1,0 +1,4 @@
+Ceci est le fichier texte, qui doit permetttre que la phase de pré-traitement soit faite correctement. Je vais  mettre des doubles espaces et des espaces après les points de paragraphes. 
+Il y a également des paragraphes différents , des virgules ne respectant pas la règle de pas d'espaces devant et un espace derrière; des points virgules et des points d'exclamation et des questions mal agencées ? ! Il s ' agit de prétraiter le texte pour qu'il soit normalisé.
+
+Finalement je vais rajouter un double espace pour vérifier la fiabilité de notre pré-traitement. Avançons ce fichier de MOPSI!

@@ -2,6 +2,7 @@
 #include<algorithm>
 #include<cstdlib>
 #include<iostream>
+#include <fstream>
 #include<ctime>
 using namespace std;
 
@@ -113,46 +114,21 @@ vector<vector<float> > costmatrix(vector<float> X, vector<float> Y){
 	return Result;
 }
 
-/**vector<float> distance(vector<vector<float> > D, int N, int M){
-	vector<float> Result;
-	for (int i = 0; i <= N; i++){
-		Result.push_back(D[N][i]);
-	}
-	return Result;
-}
-
-float max(vector<float> Delta){
-	float M = Delta[0];
-	for (int i = 0; i < Delta.size(); i++){
-		if (Delta[i] > M){ M = Delta[i]; }
-	}
-	return M;
-}
-
-vector<int> simil_subseq(vector<float> X, vector<float> Y, float tau){
-	vector<int> Result;
-	vector<vector<float> > D = costmatrix(X, Y);
-	vector<float> Delta = distance(D, X.size(), Y.size());
-	float M = max(Delta);
-	int b_star = min_dist(Delta);
-	while (D[X.size()][b_star] <= tau){
-		b_star = min_dist(Delta);
-		int a = minimizing_index(X, Y, D);
-		for (int i = a; i <= b_star; i++){
-			Result.push_back(Y[i]);
-		}
-		if (b_star + 1 <= Delta.size()){
-			Delta[b_star + 1] = 1000 * M;
-		}
-		if (b_star - 1 >= 0){
-			Delta[b_star - 1] = 1000 * M;
-		}
-	}
-	return Result;
-}**/
-
 int main(){
 	srand(time(0));
+
+	ifstream fichier("test.txt", ios::in);  // on ouvre le fichier en lecture - doit être dans le build
+
+	if (fichier)  // si l'ouverture a réussi
+	{
+		// instructions
+		fichier.close();  // on ferme le fichier
+	}
+	else  // sinon
+		cerr << "Impossible d'ouvrir le fichier !" << endl;
+
+
+
 	vector<float> X, Y;
 	int N = rand() % 100 + 1;
 	int M = rand() % 70 + 1;
