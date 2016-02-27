@@ -52,6 +52,7 @@ int main(){
 						}
 						else { Res = Res + Stock[i][j]; }
 					}
+					else if (j == S - 1 && Stock[i][j] == ' '){}
 					else { Res = Res + Stock[i][j]; }
 				}
 				if (Res != ""){
