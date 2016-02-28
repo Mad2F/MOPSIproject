@@ -16,5 +16,7 @@ add_executable(Project
 			   CostMat.h
 			   CostMat.cpp
 			   open.cpp
-			   open.h)
+			   open.h
+			   mot.h
+			   mot.cpp)
 ImagineUseModules(Project Graphics)

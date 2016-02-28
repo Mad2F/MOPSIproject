@@ -7,6 +7,7 @@ using namespace std;
 #include "Graph.h"
 #include "CostMat.h"
 #include "open.h"
+#include "mot.h"
 
 float rand_float(){
 	float number1 = 1; float number2 = 1;
