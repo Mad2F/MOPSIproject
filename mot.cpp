@@ -1,8 +1,10 @@
 #include "mot.h"
 
 Mot::Mot(string s, int No, int i){
-	name = s;
-	add_new(No, i);
+	if (!s.empty()){
+		name = s;
+		add_new(No, i);
+	}
 }
 
 void Mot::add_new(int No, int i){
