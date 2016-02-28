@@ -1,7 +1,7 @@
 #include<cstdlib>
-#include<iostream>
 #include <fstream>
 #include<ctime>
+#include <sstream>
 using namespace std;
 
 #include "Graph.h"
@@ -16,7 +16,64 @@ float rand_float(){
 	return number;
 }
 
+vector<string> &split(string s, char delim, vector<string> &elems) {
+	stringstream ss(s);
+	string item;
+	while (getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
 
+
+vector<string> split(string s, char delim) {
+	vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
+}
+
+Text txt_to_Text(){
+	ifstream fichier("treated.txt", ios::in);
+	Text T;
+	bool LC = lingua_continua();
+	if (fichier){
+		string ligne{};
+		string mot{};
+		vector<string> Stock;
+		while (getline(fichier, ligne)){
+			Stock.push_back(ligne);
+		}
+		for (int i = 0; i < Stock.size(); i++){
+			if (LC){
+				Paragraph P = Paragraph(i);
+				for (int j = 0; j < Stock[i].size(); j++){
+					string s;
+					s.push_back(Stock[i][j]);
+					Mot M = Mot(s, i, j);
+					P.add_new(M, j);
+				}
+				P.set_length(Stock[i].size());
+				T.add_new(P, i);
+			}
+			else{
+				vector<string> Understock = split(Stock[i], ' ');
+				Paragraph P = Paragraph(i);
+				for (int j = 0; j < Understock.size(); j++){
+					Mot M = Mot(Understock[j], i, j);
+					P.add_new(M, j);
+				}
+				P.set_length(Understock.size());
+				T.add_new(P, i);
+			}
+		}
+		fichier.close();
+		return T;
+	}
+	else{
+		cerr << "Impossible d'ouvrir le fichier traité" << endl;
+		return T;
+	}	
+}
 
 
 int main(){
@@ -25,6 +82,10 @@ int main(){
 	opening();
 	// lingua continua returns false if the opening is wrong or if the language is not continua.
 	cout << lingua_continua() << endl;
+
+	Text T = txt_to_Text();
+
+	T.display();
 
 	vector<float> X, Y;
 	int N = rand() % 100 + 1;
