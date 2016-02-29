@@ -61,16 +61,16 @@ void Text::add_new(Paragraph P, int i){
 
 void Text::update_pos(){
 	int S = FullParagText[0].get_length();
-	for (int i = 1; i < FullParagText.size() - 1; i++){
+	for (int i = 1; i < FullParagText.size(); i++){
 		for (int j = 0; j < FullParagText[i].get_word_number(); j++){
 			int N = FullParagText[i].get_word(j).get_positions().size();
 			if (N > 0){
 				for (int k = 0; k < N; k++){
-					FullParagText[i].get_word(j).set_glb_pos(k, S);
+					FullParagText[i].set_word(j, k, S);
 				}
 			}
 		}
-		S += FullParagText[i].get_length();
+		S += FullParagText[i].get_length() + 1;
 	}
 }
 

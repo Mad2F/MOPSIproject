@@ -29,6 +29,7 @@ public:
 	int get_number(){ return Number; };
 	int get_word_number(){ return Stock.size(); }
 	Mot get_word(int i);
+	void set_word(int i, int j, int Pos){ Stock[i].set_glb_pos(j, Pos); }
 	void add_new(Mot M, int pos);
 	void set_length(int L){ len = L; }
 	void set_number(int N){ Number = N; }
