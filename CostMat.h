@@ -1,3 +1,4 @@
+//Cf article. C'est littéralement cet algo
 vector<vector<float> > costmatrix(vector<float> X, vector<float> Y){
 	vector<vector<float> > Result;
 	//Init

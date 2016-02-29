@@ -1,10 +1,10 @@
 #include "Image.h"
-
+//Coût normal
 float cost(float x, float y){
 	return abs(x - y);
 }
 
-
+//Fonction de dessin de distances de 2 vecteurs
 void Draw_X_Y(vector<float> X, vector<float> Y){
 	openWindow(2 * X.size(), 2 * Y.size());
 	Image I = AlloueImage(X.size(), Y.size());
@@ -18,6 +18,7 @@ void Draw_X_Y(vector<float> X, vector<float> Y){
 	endGraphics;
 }
 
+//Dessine la matrice de coût
 void Draw_D(vector<vector<float> > D, int N, int M){
 	openWindow(2 * N, 2 * M);
 	Image I = AlloueImage(N, M);
