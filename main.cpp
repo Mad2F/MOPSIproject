@@ -20,6 +20,12 @@ vector<string> &split(string s, char delim, vector<string> &elems) {
 	stringstream ss(s);
 	string item;
 	while (getline(ss, item, delim)) {
+		if (item[item.length() - 1] < 65 || item[item.length() - 1] > 122){
+			item.pop_back();
+		}
+		if (item[0] >= 'A' && item[0] <= 'Z'){
+			item[0] += 32;
+		}
 		elems.push_back(item);
 	}
 	return elems;
