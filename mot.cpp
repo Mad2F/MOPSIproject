@@ -15,20 +15,6 @@ void Mot::add_new(int No, int i){
 	global_position.push_back(i);
 }
 
-void Paragraph::add_new(string s, int pos){
-	bool k = false;
-	for (int i = 0; i < Stock.size(); i++){
-		if (s == Stock[i].get_name()){
-			Stock[i].add_new(Number, pos);
-			k = true;
-		}
-	}
-	if (k == false){
-		Mot M = Mot(s, Number, pos);
-		Stock.push_back(M);
-	}
-}
-
 void Paragraph::add_new(Mot M, int pos){
 	bool k = false;
 	for (int i = 0; i < Stock.size(); i++){
@@ -40,23 +26,6 @@ void Paragraph::add_new(Mot M, int pos){
 	if (k == false){
 		Stock.push_back(M);
 	}
-}
-
-Paragraph::Paragraph(vector<Mot> Given, int Num, int L){
-	Stock = Given;
-	Number = Num;
-	len = L;
-};
-Paragraph::Paragraph(Mot M, int Num, int L){
-	Stock = { M };
-	Number = Num;
-	len = L;
-};
-
-Paragraph::Paragraph(){
-	Number = 0;
-	len = 0;
-	Stock = {};
 }
 
 Paragraph::Paragraph(int i){
@@ -73,7 +42,7 @@ Text::Text(vector<Paragraph> P, int L){
 	Language = L;
 	FullParagText = P;
 	for (int i = 0; i < P.size(); i++){
-		for (int j = 0; j < P[i].get_length(); j++){
+		for (int j = 0; j < P[i].get_length() - 1; j++){
 			FullWordText.push_back(P[i].get_word(j));
 		}
 	}
@@ -90,12 +59,25 @@ void Text::add_new(Paragraph P, int i){
 	FullParagText.push_back(P);
 }
 
-
+void Text::update_pos(){
+	int S = FullParagText[0].get_length();
+	for (int i = 1; i < FullParagText.size() - 1; i++){
+		for (int j = 0; j < FullParagText[i].get_word_number(); j++){
+			int N = FullParagText[i].get_word(j).get_positions().size();
+			if (N > 0){
+				for (int k = 0; k < N; k++){
+					FullParagText[i].get_word(j).set_glb_pos(k, S);
+				}
+			}
+		}
+		S += FullParagText[i].get_length();
+	}
+}
 
 void Mot::display(){
 	cout << name << " : ";
-	for (int i = 0; i < position.size(); i++){
-		cout << position[i][1] << " ";
+	for (int i = 0; i < global_position.size(); i++){
+		cout << global_position[i] << " ";
 	}
 	cout << endl;
 }

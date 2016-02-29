@@ -14,6 +14,7 @@ public:
 	vector<vector<int> > get_parag_positions(){ return position; }
 	vector<int> get_positions(){ return global_position; }
 	void add_new(int No, int i);
+	void set_glb_pos(int i, int Pos){ global_position[i] = global_position[i] + Pos; }
 	void display();
 };
 
@@ -23,14 +24,11 @@ class Paragraph{
 	int len;
 
 public:
-	Paragraph(vector<Mot> Given, int Num, int L);
-	Paragraph(Mot M, int Num, int L);
-	Paragraph();
 	Paragraph(int i);
 	int get_length(){ return len; }
 	int get_number(){ return Number; };
+	int get_word_number(){ return Stock.size(); }
 	Mot get_word(int i);
-	void add_new(string s, int pos);
 	void add_new(Mot M, int pos);
 	void set_length(int L){ len = L; }
 	void set_number(int N){ Number = N; }
@@ -48,5 +46,6 @@ public:
 	void add_new(Paragraph P, int i);
 	int get_nb_parag(){ return FullParagText.size(); }
 	Paragraph get_parag(int i){ return FullParagText[i]; }
+	void update_pos();
 	void display();
 };

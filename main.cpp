@@ -62,11 +62,12 @@ Text txt_to_Text(){
 					Mot M = Mot(Understock[j], i, j);
 					P.add_new(M, j);
 				}
-				P.set_length(Understock.size());
+				P.set_length(Understock.size() - 1);
 				T.add_new(P, i);
 			}
 		}
 		fichier.close();
+		T.update_pos();
 		return T;
 	}
 	else{
