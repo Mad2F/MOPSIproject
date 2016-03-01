@@ -55,9 +55,9 @@ int main(){
 
 	//Ouvre le fichier d'entrée
 	cout << "Opening first Text" << endl;
-	opening("SoldierL1.txt", "treat1.txt");
+	opening("PetitPrinceL1.txt", "treat1.txt");
 	cout << "Opening second Text" << endl;
-	opening("SoldierL2.txt", "treat2.txt");
+	opening("PetitPrinceL2.txt", "treat2.txt");
 
 	// lingua continua returns false if the opening is wrong or if the language is not continua.
 
@@ -80,7 +80,7 @@ int main(){
 	cout << "Applying DTW between words of Txt 1 and 2" << endl;
 	vector<vector<float> > R = DTW_texts(T1, T2, 10);
 
-	cout << "DTW of all words" << endl;
+	/**cout << "DTW of all words" << endl;
 	openWindow(2 * R.size(), 2 * R[0].size());
 	float m = R[0][0];
 	float P = R[0][0];
@@ -97,7 +97,7 @@ int main(){
 		}
 	}
 	AfficheImage(I);
-	endGraphics;
+	endGraphics;**/
 
 	vector<vector<int> > Corresp;
 	for (int i = 0; i < R.size() - 1; i++){

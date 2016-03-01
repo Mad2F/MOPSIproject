@@ -98,7 +98,12 @@ vector<string> &split(string s, char delim, vector<string> &elems) {
 		if (item[0] >= 'A' && item[0] <= 'Z'){
 			item[0] += 32;
 		}
-		elems.push_back(item);
+		if (item[0] > 122 || item[0] < 65){
+			item.erase(0);
+		}
+		if (!item.empty()){
+			elems.push_back(item);
+		}
 	}
 	return elems;
 }
