@@ -97,9 +97,21 @@ int main(){
 		}
 	}
 	AfficheImage(I);
-	system("pause");
 	endGraphics;
 
+	vector<vector<int> > Corresp;
+	for (int i = 0; i < R.size() - 1; i++){
+		int k = 0;
+		for (int j = 0; j < R[0].size() - 1; j++){
+			if ((R[i][j] < R[i][k] && R[i][j] != -1) || (R[i][k] == -1 && R[i][j] >= 0)){ k = j; }
+		}
+		if (R[i][k] != -1){
+			Corresp.push_back({ i, k });
+		}
+	}
+	for (int i = 0; i < Corresp.size(); i++){
+		cout << T1.get_word(Corresp[i][0]).get_name() << " <-> " << T2.get_word(Corresp[i][1]).get_name() << endl;
+	}
 	//Test DTW
 	/**vector<float> X, Y;
 	int N = rand() % 100 + 1;
