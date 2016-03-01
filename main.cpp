@@ -78,7 +78,7 @@ int main(){
 
 	//On transforme les mots en DTW
 	cout << "Applying DTW between words of Txt 1 and 2" << endl;
-	vector<vector<float> > R = DTW_texts(T1, T2, 100);
+	vector<vector<float> > R = DTW_texts(T1, T2, 10);
 
 	cout << "DTW of all words" << endl;
 	openWindow(2 * R.size(), 2 * R[0].size());
