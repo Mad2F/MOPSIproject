@@ -20,23 +20,26 @@ vector<vector<float> > DTW_texts(Text T1, Text T2){
 	vector<vector<float> > Result;
 	for (int i = 0; i < T1.get_nb_words(); i++){
 		vector<float> Interm;
-		for (int j = 0; j < T2.get_nb_words(); j++){
-			if (T1.get_word(i).get_positions().size() > 1 && T2.get_word(j).get_positions().size() > 1){
-				vector<float> t1, t2;
-				for (int k = 0; k < T1.get_word(i).get_positions().size(); k++){
-					t1.push_back(float(T1.get_word(i).get_positions()[k]) / float(T1.get_nb_words()));
+		if (T1.get_word(i).get_positions().size() > 1){
+			for (int j = 0; j < T2.get_nb_words(); j++){
+				if (T2.get_word(j).get_positions().size() > 1){
+					vector<float> t1, t2;
+					for (int k = 0; k < T1.get_word(i).get_positions().size(); k++){
+						t1.push_back(float(T1.get_word(i).get_positions()[k]) / float(T1.get_nb_words()));
+					}
+					for (int k = 0; k < T2.get_word(j).get_positions().size(); k++){
+						t2.push_back(float(T2.get_word(j).get_positions()[k]) / float(T2.get_nb_words()));
+					}
+					vector<vector<float> > CM = costmatrix(t1, t2);
+					Interm.push_back(CM[CM.size() - 1][CM[0].size() - 1]);
 				}
-				for (int k = 0; k < T2.get_word(j).get_positions().size(); k++){
-					t2.push_back(float(T2.get_word(j).get_positions()[k]) / float(T2.get_nb_words()));
+				else{
+					Interm.push_back(-1); // Si le mot n'est représenté qu'une fois, il n'est pas significatif pour le DTW - gain de temps.
 				}
-				vector<vector<float> > CM = costmatrix(t1, t2);
-				Interm.push_back(CM[CM.size() - 1][CM[0].size() - 1]);
-			}
-			else{
-				Interm.push_back(-1); // Si le mot n'est représenté qu'une fois, il n'est pas significatif pour le DTW - gain de temps.
 			}
 		}
 		Result.push_back(Interm);
+		cout << "Progression " << float(i) / float(T1.get_nb_words()) * 100 << endl;
 	}
 	return Result;
 }
