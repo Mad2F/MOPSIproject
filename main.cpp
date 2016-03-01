@@ -16,13 +16,13 @@ float rand_float(){
 	return number;
 }
 
-vector<vector<float> > DTW_texts(Text T1, Text T2){
+vector<vector<float> > DTW_texts(Text T1, Text T2, int significativite){
 	vector<vector<float> > Result;
 	for (int i = 0; i < T1.get_nb_words(); i++){
 		vector<float> Interm;
-		if (T1.get_word(i).get_positions().size() > 1){
+		if (T1.get_word(i).get_positions().size() > significativite){
 			for (int j = 0; j < T2.get_nb_words(); j++){
-				if (T2.get_word(j).get_positions().size() > 1){
+				if (T2.get_word(j).get_positions().size() > significativite){
 					vector<float> t1, t2;
 					for (int k = 0; k < T1.get_word(i).get_positions().size(); k++){
 						t1.push_back(float(T1.get_word(i).get_positions()[k]) / float(T1.get_nb_words()));
@@ -34,12 +34,18 @@ vector<vector<float> > DTW_texts(Text T1, Text T2){
 					Interm.push_back(CM[CM.size() - 1][CM[0].size() - 1]);
 				}
 				else{
-					Interm.push_back(-1); // Si le mot n'est représenté qu'une fois, il n'est pas significatif pour le DTW - gain de temps.
+					Interm.push_back(-1); 
+					// Si le mot n'est pas représenté suffisammen de fois, il n'est pas significatif pour le DTW - gain de temps.
 				}
 			}
 		}
+		else{
+			for (int j = 0; j < T2.get_nb_words(); j++){
+				Interm.push_back(-1); // Si le mot n'est représenté qu'une fois, il n'est pas significatif pour le DTW - gain de temps.
+			}
+		}
 		Result.push_back(Interm);
-		cout << "Progression " << float(i) / float(T1.get_nb_words()) * 100 << endl;
+		cout << "Progression " << float(i) / float(T1.get_nb_words()) * 100 << " %" << endl;
 	}
 	return Result;
 }
@@ -72,21 +78,21 @@ int main(){
 
 	//On transforme les mots en DTW
 	cout << "Applying DTW between words of Txt 1 and 2" << endl;
-	vector<vector<float> > R = DTW_texts(T1, T2);
+	vector<vector<float> > R = DTW_texts(T1, T2, 100);
 
 	cout << "DTW of all words" << endl;
 	openWindow(2 * R.size(), 2 * R[0].size());
 	float m = R[0][0];
 	float P = R[0][0];
-	Image I = AlloueImage(R.size(), R[0].size());	
-	for (int i = 0; i < I.H; i++){
-		for (int j = 0; j < I.W; j++){
-			if (R[i][j] < m){ m = R[i][j]; }
+	Image I = AlloueImage(R.size() - 1, R[0].size() - 1);	
+	for (int i = 0; i < R.size() - 1; i++){
+		for (int j = 0; j < R[0].size() - 1; j++){
+			if ((R[i][j] < m && R[i][j] != -1) || (m == -1 && R[i][j] >= 0)){ m = R[i][j]; }
 			if (R[i][j] > P){ P = R[i][j]; }
 		}
 	}
-	for (int i = 0; i < I.H; i++){
-		for (int j = 0; j < I.W; j++){
+	for (int i = 0; i < R.size() - 1; i++){
+		for (int j = 0; j < R[0].size() - 1; j++){
 			Set(I, j, i, double(255 * R[i][j] / (P - m) - 255 * m / (P - m)));
 		}
 	}
