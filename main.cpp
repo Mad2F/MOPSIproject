@@ -7,7 +7,6 @@ using namespace std;
 #include "Graph.h"
 #include "CostMat.h"
 #include "open.h"
-#include "mot.h"
 
 //Méthode random
 float rand_float(){
@@ -17,102 +16,83 @@ float rand_float(){
 	return number;
 }
 
-//Méthodes pour séparer des string en vecteur de string - parse en python
-//Ajout de méthode pour gérer la ponctuation à la fin et les majuscules au début
-vector<string> &split(string s, char delim, vector<string> &elems) {
-	stringstream ss(s);
-	string item;
-	while (getline(ss, item, delim)) {
-		if (item[item.length() - 1] < 65 || item[item.length() - 1] > 122){
-			item.pop_back();
-		}
-		if (item[0] >= 'A' && item[0] <= 'Z'){
-			item[0] += 32;
-		}
-		elems.push_back(item);
-	}
-	return elems;
-}
-
-//Méthodes pour séparer des string en vecteur de string - parse en python
-vector<string> split(string s, char delim) {
-	vector<std::string> elems;
-	split(s, delim, elems);
-	return elems;
-}
-
-//Classifie le texte en Mots, Paragraphes et Texte.
-Text txt_to_Text(){
-	//Init
-	ifstream fichier("treated.txt", ios::in);
-	Text T;
-	bool LC = lingua_continua();
-	string ligne{};
-	string mot{};
-	vector<string> Stock;
-
-	//Essai d'ouvrir le fichier
-	if (fichier){
-		//Stocke les lignes dans un vecteur
-		while (getline(fichier, ligne)){
-			Stock.push_back(ligne);
-		}
-		for (int i = 0; i < Stock.size(); i++){
-			//Si Lingua continua on parse tous les caractères.
-			if (LC){
-				Paragraph P = Paragraph(i);
-				for (int j = 0; j < Stock[i].size(); j++){
-					string s;
-					s.push_back(Stock[i][j]);
-					Mot M = Mot(s, i, j);
-					P.add_new(M, j);
+vector<vector<float> > DTW_texts(Text T1, Text T2){
+	vector<vector<float> > Result;
+	for (int i = 0; i < T1.get_nb_words(); i++){
+		vector<float> Interm;
+		for (int j = 0; j < T2.get_nb_words(); j++){
+			if (T1.get_word(i).get_positions().size() > 1 && T2.get_word(j).get_positions().size() > 1){
+				vector<float> t1, t2;
+				for (int k = 0; k < T1.get_word(i).get_positions().size(); k++){
+					t1.push_back(float(T1.get_word(i).get_positions()[k]) / float(T1.get_nb_words()));
 				}
-				P.set_length(Stock[i].size());
-				T.add_new(P, i);
+				for (int k = 0; k < T2.get_word(j).get_positions().size(); k++){
+					t2.push_back(float(T2.get_word(j).get_positions()[k]) / float(T2.get_nb_words()));
+				}
+				vector<vector<float> > CM = costmatrix(t1, t2);
+				Interm.push_back(CM[CM.size() - 1][CM[0].size() - 1]);
 			}
-			// Sinon on parse en fonction des espaces
 			else{
-				vector<string> Understock = split(Stock[i], ' ');
-				Paragraph P = Paragraph(i);
-				for (int j = 0; j < Understock.size(); j++){
-					Mot M = Mot(Understock[j], i, j);
-					P.add_new(M, j);
-				}
-				P.set_length(Understock.size() - 1);
-				T.add_new(P, i);
+				Interm.push_back(-1); // Si le mot n'est représenté qu'une fois, il n'est pas significatif pour le DTW - gain de temps.
 			}
 		}
-		//On ferme le fichier et on update les positions globales du texte.
-		fichier.close();
-		T.update_pos();
-		return T;
+		Result.push_back(Interm);
 	}
-	//Problème ouverture fichier, renvoie texte vide
-	else{
-		cerr << "Impossible d'ouvrir le fichier traité" << endl;
-		return T;
-	}	
+	return Result;
 }
-
 
 int main(){
 	srand(time(0));
 
 	//Ouvre le fichier d'entrée
-	opening();
+	cout << "Opening first Text" << endl;
+	opening("SoldierL1.txt", "treat1.txt");
+	cout << "Opening second Text" << endl;
+	opening("SoldierL2.txt", "treat2.txt");
 
 	// lingua continua returns false if the opening is wrong or if the language is not continua.
-	cout << lingua_continua() << endl;
+
+	cout << "First Text lingua continua ? " << lingua_continua("treat1.txt") << endl;
+	cout << "Second Text lingua continua ? " << lingua_continua("treat2.txt") << endl;
 
 	//On obtient un texte avec des mots
-	Text T = txt_to_Text();
+	cout << "Converting Text 1 to an inside structure" << endl;
+	Text T1 = txt_to_Text("treat1.txt");
+	cout << "Converting Text 2 to an inside structure" << endl;
+	Text T2 = txt_to_Text("treat2.txt");
 
 	//Affichage du texte
-	T.display();
-	T.display_glob();
+	cout << "Displaying Text 1" << endl;
+	T1.display_glob();
+	cout << "Displaying Text 2" << endl;
+	T2.display_glob();
+
+	//On transforme les mots en DTW
+	cout << "Applying DTW between words of Txt 1 and 2" << endl;
+	vector<vector<float> > R = DTW_texts(T1, T2);
+
+	cout << "DTW of all words" << endl;
+	openWindow(2 * R.size(), 2 * R[0].size());
+	float m = R[0][0];
+	float P = R[0][0];
+	Image I = AlloueImage(R.size(), R[0].size());	
+	for (int i = 0; i < I.H; i++){
+		for (int j = 0; j < I.W; j++){
+			if (R[i][j] < m){ m = R[i][j]; }
+			if (R[i][j] > P){ P = R[i][j]; }
+		}
+	}
+	for (int i = 0; i < I.H; i++){
+		for (int j = 0; j < I.W; j++){
+			Set(I, j, i, double(255 * R[i][j] / (P - m) - 255 * m / (P - m)));
+		}
+	}
+	AfficheImage(I);
+	system("pause");
+	endGraphics;
 
 	//Test DTW
-	vector<float> X, Y;
+	/**vector<float> X, Y;
 	int N = rand() % 100 + 1;
 	int M = rand() % 70 + 1;
 	for (int i = 0; i < N; i++){
@@ -126,7 +106,7 @@ int main(){
 
 	vector<vector<float> > D = costmatrix(X, Y);
 
-	Draw_D(D, X.size(), Y.size());
+	Draw_D(D, X.size(), Y.size());**/
 
 	return 0;
 }

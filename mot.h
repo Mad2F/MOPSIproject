@@ -51,6 +51,8 @@ public:
 	void add_new(Paragraph P, int i); //Ajout d'un paragraph no i
 	int get_nb_parag(){ return FullParagText.size(); } //Méthodes d'accès
 	Paragraph get_parag(int i){ return FullParagText[i]; } //Méthodes d'accès
+	Mot get_word(int i){ return FullWordText[i]; } //Méthodes d'accès
+	int get_nb_words(){ return FullWordText.size(); }
 	void update_pos(); //Update les positions globales
 	void display(); //Display les mots par paragraphes
 	void display_glob(); //Display les mots par mots

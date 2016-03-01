@@ -1,10 +1,12 @@
 #include<vector>
 using namespace std;
 
+#include "mot.h"
+
 //Fonction qui ouvre un fichier test.txt
-void opening(){
-	ifstream fichier("test.txt", ios::in);  // on ouvre le fichier en lecture - doit être dans le build
-	ofstream treat{ "treated.txt" };
+void opening(string entree, string sortie){
+	ifstream fichier(entree, ios::in);  // on ouvre le fichier en lecture - doit être dans le build
+	ofstream treat{ sortie };
 
 	if (fichier)  // si l'ouverture a réussi
 	{
@@ -45,7 +47,6 @@ void opening(){
 				}
 				//On enlève le double retour à la ligne
 				if (Res != ""){
-					cout << Res << endl;
 					treat << Res << endl;
 					Res = "";
 				}
@@ -61,8 +62,8 @@ void opening(){
 }
 
 //Détermine si c'est une lignua continua
-bool lingua_continua(){
-	ifstream fichier("treated.txt", ios::in);
+bool lingua_continua(string sortie){
+	ifstream fichier(sortie, ios::in);
 	if (fichier){
 		//Comptuer de caractères + compteur d'espaces seulement
 		int compteur = 0;
@@ -85,3 +86,79 @@ bool lingua_continua(){
 	return false;
 }
 
+//Méthodes pour séparer des string en vecteur de string - parse en python
+//Ajout de méthode pour gérer la ponctuation à la fin et les majuscules au début
+vector<string> &split(string s, char delim, vector<string> &elems) {
+	stringstream ss(s);
+	string item;
+	while (getline(ss, item, delim)) {
+		if (item[item.length() - 1] < 65 || item[item.length() - 1] > 122){
+			item.pop_back();
+		}
+		if (item[0] >= 'A' && item[0] <= 'Z'){
+			item[0] += 32;
+		}
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+//Méthodes pour séparer des string en vecteur de string - parse en python
+vector<string> split(string s, char delim) {
+	vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
+}
+
+//Classifie le texte en Mots, Paragraphes et Texte.
+Text txt_to_Text(string sortie){
+	//Init
+	ifstream fichier(sortie, ios::in);
+	Text T;
+	bool LC = lingua_continua(sortie);
+	string ligne{};
+	string mot{};
+	vector<string> Stock;
+
+	//Essai d'ouvrir le fichier
+	if (fichier){
+		//Stocke les lignes dans un vecteur
+		while (getline(fichier, ligne)){
+			Stock.push_back(ligne);
+		}
+		for (int i = 0; i < Stock.size(); i++){
+			//Si Lingua continua on parse tous les caractères.
+			if (LC){
+				Paragraph P = Paragraph(i);
+				for (int j = 0; j < Stock[i].size(); j++){
+					string s;
+					s.push_back(Stock[i][j]);
+					Mot M = Mot(s, i, j);
+					P.add_new(M, j);
+				}
+				P.set_length(Stock[i].size());
+				T.add_new(P, i);
+			}
+			// Sinon on parse en fonction des espaces
+			else{
+				vector<string> Understock = split(Stock[i], ' ');
+				Paragraph P = Paragraph(i);
+				for (int j = 0; j < Understock.size(); j++){
+					Mot M = Mot(Understock[j], i, j);
+					P.add_new(M, j);
+				}
+				P.set_length(Understock.size() - 1);
+				T.add_new(P, i);
+			}
+		}
+		//On ferme le fichier et on update les positions globales du texte.
+		fichier.close();
+		T.update_pos();
+		return T;
+	}
+	//Problème ouverture fichier, renvoie texte vide
+	else{
+		cerr << "Impossible d'ouvrir le fichier traité" << endl;
+		return T;
+	}
+}
