@@ -22,7 +22,7 @@ vector<vector<float> > DTW_texts(Text T1, Text T2, int significativite){
 		vector<float> Interm;
 		if (T1.get_word(i).get_positions().size() > significativite){
 			for (int j = 0; j < T2.get_nb_words(); j++){
-				if (T2.get_word(j).get_positions().size() > 0.5*significativite && T2.get_word(j).get_positions().size() < 2*significativite){
+				if (T2.get_word(j).get_positions().size() > 0.5*T1.get_word(i).get_positions().size() && T2.get_word(j).get_positions().size() < 2 * T1.get_word(i).get_positions().size()){
 					vector<float> t1, t2;
 					for (int k = 0; k < T1.get_word(i).get_positions().size(); k++){
 						t1.push_back(float(T1.get_word(i).get_positions()[k]) / float(T1.get_nb_words()));
@@ -55,9 +55,9 @@ int main(){
 
 	//Ouvre le fichier d'entrée
 	cout << "Opening first Text" << endl;
-	opening("BacchanteL1.txt", "treat1.txt");
+	opening("TryL1.txt", "treat1.txt");
 	cout << "Opening second Text" << endl;
-	opening("BacchanteL2.txt", "treat2.txt");
+	opening("TryL2.txt", "treat2.txt");
 
 	// lingua continua returns false if the opening is wrong or if the language is not continua.
 
@@ -78,7 +78,7 @@ int main(){
 
 	//On transforme les mots en DTW
 	cout << "Applying DTW between words of Txt 1 and 2" << endl;
-	vector<vector<float> > R = DTW_texts(T1, T2, 50);
+	vector<vector<float> > R = DTW_texts(T1, T2, 10);
 
 	/**cout << "DTW of all words" << endl;
 	openWindow(2 * R.size(), 2 * R[0].size());
