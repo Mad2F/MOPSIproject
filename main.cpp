@@ -55,9 +55,9 @@ int main(){
 
 	//Ouvre le fichier d'entrée
 	cout << "Opening first Text" << endl;
-	opening("TryL1.txt", "treat1.txt");
+	opening("BigL1.txt", "treat1.txt");
 	cout << "Opening second Text" << endl;
-	opening("TryL2.txt", "treat2.txt");
+	opening("BigL2.txt", "treat2.txt");
 
 	// lingua continua returns false if the opening is wrong or if the language is not continua.
 
@@ -111,9 +111,7 @@ int main(){
 	}
 
 	for (int i = 0; i < Corresp.size(); i++){
-		T1.get_word(Corresp[i][0]).display();
-		cout << " <-> " << endl;
-		T2.get_word(Corresp[i][1]).display();
+		cout << T1.get_word(Corresp[i][0]).get_name() << " <-> " << T2.get_word(Corresp[i][1]).get_name() << endl;
 	}
 
 	//Test DTW

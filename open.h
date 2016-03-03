@@ -92,17 +92,19 @@ vector<string> &split(string s, char delim, vector<string> &elems) {
 	stringstream ss(s);
 	string item;
 	while (getline(ss, item, delim)) {
-		if (item[item.length() - 1] < 65 || item[item.length() - 1] > 122){
-			item.pop_back();
-		}
-		if (item[0] >= 'A' && item[0] <= 'Z'){
-			item[0] += 32;
-		}
-		if (item[0] > 122 || item[0] < 65){
-			item.erase(0);
-		}
-		if (!item.empty()){
-			elems.push_back(item);
+		if (item.length() != 0){
+			if (item[item.length() - 1] < 65 || item[item.length() - 1] > 122){
+				item.pop_back();
+			}
+			if (item[0] >= 'A' && item[0] <= 'Z'){
+				item[0] += 32;
+			}
+			if (item[0] > 122 || item[0] < 65){
+				item.erase(0);
+			}
+			if (!item.empty()){
+				elems.push_back(item);
+			}
 		}
 	}
 	return elems;
@@ -148,12 +150,14 @@ Text txt_to_Text(string sortie){
 			else{
 				vector<string> Understock = split(Stock[i], ' ');
 				Paragraph P = Paragraph(i);
-				for (int j = 0; j < Understock.size(); j++){
-					Mot M = Mot(Understock[j], i, j);
-					P.add_new(M, j);
+				if (Understock.size() != 0){
+					for (int j = 0; j < Understock.size(); j++){
+						Mot M = Mot(Understock[j], i, j);
+						P.add_new(M, j);
+					}
+					P.set_length(Understock.size());
+					T.add_new(P, i);
 				}
-				P.set_length(Understock.size() - 1);
-				T.add_new(P, i);
 			}
 		}
 		//On ferme le fichier et on update les positions globales du texte.
