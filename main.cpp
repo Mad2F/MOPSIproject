@@ -78,26 +78,7 @@ int main(){
 
 	//On transforme les mots en DTW
 	cout << "Applying DTW between words of Txt 1 and 2" << endl;
-	vector<vector<float> > R = DTW_texts(T1, T2, 10);
-
-	/**cout << "DTW of all words" << endl;
-	openWindow(2 * R.size(), 2 * R[0].size());
-	float m = R[0][0];
-	float P = R[0][0];
-	Image I = AlloueImage(R.size() - 1, R[0].size() - 1);	
-	for (int i = 0; i < R.size() - 1; i++){
-		for (int j = 0; j < R[0].size() - 1; j++){
-			if ((R[i][j] < m && R[i][j] != -1) || (m == -1 && R[i][j] >= 0)){ m = R[i][j]; }
-			if (R[i][j] > P){ P = R[i][j]; }
-		}
-	}
-	for (int i = 0; i < R.size() - 1; i++){
-		for (int j = 0; j < R[0].size() - 1; j++){
-			Set(I, j, i, double(255 * R[i][j] / (P - m) - 255 * m / (P - m)));
-		}
-	}
-	AfficheImage(I);
-	endGraphics;**/
+	vector<vector<float> > R = DTW_texts(T1, T2, 50);
 
 	vector<vector<int> > Corresp;
 	for (int i = 0; i < R.size() - 1; i++){
@@ -109,27 +90,16 @@ int main(){
 			Corresp.push_back({ i, k });
 		}
 	}
-
-	for (int i = 0; i < Corresp.size(); i++){
-		cout << T1.get_word(Corresp[i][0]).get_name() << " <-> " << T2.get_word(Corresp[i][1]).get_name() << endl;
+	cout << "Writing results in ..\build\Results.txt" << endl;
+	ofstream Result{ "Results.txt" };
+	if (Result){
+		for (int i = 0; i < Corresp.size(); i++){
+			Result << T1.get_word(Corresp[i][0]).get_name() << " <-> " << T2.get_word(Corresp[i][1]).get_name() << endl;
+		}
+		Result.close();
 	}
-
-	//Test DTW
-	/**vector<float> X, Y;
-	int N = rand() % 100 + 1;
-	int M = rand() % 70 + 1;
-	for (int i = 0; i < N; i++){
-		X.push_back(rand_float());
-	}
-	for (int j = 0; j < N; j++){
-		Y.push_back(rand_float());
-	}
-
-	//Draw_X_Y(X, Y);
-
-	vector<vector<float> > D = costmatrix(X, Y);
-
-	Draw_D(D, X.size(), Y.size());**/
+	else{ cout << "ERREUR: Impossible de traiter le fichier." << endl; }
+	cout << "Well done, everything went perfectly fine !" << endl;
 
 	return 0;
 }
